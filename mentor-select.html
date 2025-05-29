@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mentor - Выбор ментора</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>My Mentor</h1>
+        <nav>
+            <a href="index.html">Главная</a>
+            <a href="mentor-select.html" class="active">Менторы</a>
+            <a href="personal-goals.html">Цели</a>
+            <a href="useful-links.html">Ссылки</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Выберите ментора</h2>
+
+        <div class="mentors-grid">
+            <div class="mentor-card">
+                <img src="images/Alex.png" alt="Ментор 1">
+                <h3>Алексей Иванов</h3>
+                <p>Frontend разработчик</p>
+                <button class="select-btn" data-mentor="1">Выбрать</button>
+            </div>
+
+            <div class="mentor-card">
+                <img src="images/Maria.png" alt="Ментор 2">
+                <h3>Мария Петрова</h3>
+                <p>Backend разработчик</p>
+                <button class="select-btn" data-mentor="2">Выбрать</button>
+            </div>
+
+            <div class="mentor-card">
+                <img src="images/Dmitrii.avif" alt="Ментор 3">
+                <h3>Дмитрий Сидоров</h3>
+                <p>Fullstack разработчик</p>
+                <button class="select-btn" data-mentor="3">Выбрать</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 My Mentor. Все права защищены.</p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('.select-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const mentorId = this.getAttribute('data-mentor');
+                localStorage.setItem('selectedMentor', mentorId);
+                window.location.href = 'mentor-tasks.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

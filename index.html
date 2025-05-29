@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mentor - Вход</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>My Mentor</h1>
+        <nav>
+            <a href="index.html" class="active">Главная</a>
+            <a href="mentor-select.html">Менторы</a>
+            <a href="personal-goals.html">Цели</a>
+            <a href="useful-links.html">Ссылки</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="auth-section">
+            <div class="auth-tabs">
+                <button class="tab-btn active" data-tab="login">Вход</button>
+                <button class="tab-btn" data-tab="register">Регистрация</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <input type="text" placeholder="Имя" required>
+                <input type="text" placeholder="Фамилия" required>
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Пароль" required>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2023 My Mentor. Все права защищены.</p>
+    </footer>
+
+    <script>
+        // Проверяем авторизацию при загрузке страницы
+            document.addEventListener('DOMContentLoaded', function () {
+                // Переключение между вкладками
+                const tabBtns = document.querySelectorAll('.tab-btn');
+                const authForms = document.querySelectorAll('.auth-form');
+
+                tabBtns.forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const tab = this.getAttribute('data-tab');
+
+                        // Убираем активный класс у всех кнопок и форм
+                        tabBtns.forEach(b => b.classList.remove('active'));
+                        authForms.forEach(form => form.classList.remove('active'));
+
+                        // Добавляем активный класс текущей кнопке и форме
+                        this.classList.add('active');
+                        document.getElementById(tab + 'Form').classList.add('active');
+                    });
+                });
+
+                // Обработка формы входа
+                document.getElementById('loginForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const email = this.querySelector('input[type="email"]').value;
+                    const password = this.querySelector('input[type="password"]').value;
+
+                    // Получаем пользователей из localStorage
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+                    // Ищем пользователя
+                    const user = users.find(u => u.email === email);
+
+                    if (!user) {
+                        alert('Пользователь не найден');
+                        return;
+                    }
+
+                    if (user.password !== password) {
+                        alert('Неверный пароль');
+                        return;
+                    }
+
+                    // Сохраняем текущего пользователя
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+
+                    // Перенаправляем на страницу выбора ментора
+                    window.location.href = 'mentor-select.html';
+                });
+
+                // Обработка формы регистрации
+                document.getElementById('registerForm').addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const firstName = this.querySelector('input:nth-of-type(1)').value;
+                    const lastName = this.querySelector('input:nth-of-type(2)').value;
+                    const email = this.querySelector('input[type="email"]').value;
+                    const password = this.querySelector('input[type="password"]').value;
+
+                    // Получаем пользователей из localStorage
+                    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+                    // Проверяем, есть ли уже такой email
+                    if (users.some(u => u.email === email)) {
+                        alert('Пользователь с таким email уже зарегистрирован');
+                        return;
+                    }
+
+                    // Создаем нового пользователя
+                    const newUser = {
+                        firstName,
+                        lastName,
+                        email,
+                        password
+                    };
+
+                    // Добавляем в массив пользователей
+                    users.push(newUser);
+
+                    // Сохраняем в localStorage
+                    localStorage.setItem('users', JSON.stringify(users));
+                    localStorage.setItem('currentUser', JSON.stringify(newUser));
+
+                    // Перенаправляем на страницу выбора ментора
+                    window.location.href = 'mentor-select.html';
+                });
+            });
+    </script>
+</body>
+
+</html>

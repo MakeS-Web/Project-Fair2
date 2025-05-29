@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Mentor - Задачи</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>My Mentor</h1>
+        <nav>
+            <a href="index.html">Главная</a>
+            <a href="mentor-select.html">Менторы</a>
+            <a href="mentor-tasks.html" class="active">Задачи</a>
+            <a href="personal-goals.html">Цели</a>
+            <a href="useful-links.html">Ссылки</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h2>Задачи вашего ментора</h2>
+
+        <div id="tasksList" class="tasks-list">
+            <!-- Задачи будут добавляться через JS -->
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2023 My Mentor. Все права защищены.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+                // Задачи для каждого ментора
+                const mentorsTasks = {
+                    1: [
+                        "Изучить основы HTML",
+                        "Освоить CSS и Flexbox",
+                        "Изучить JavaScript (переменные, функции, циклы)",
+                        "Создать первый проект на чистом JavaScript"
+                    ],
+                    2: [
+                        "Изучить основы Node.js",
+                        "Освоить работу с базами данных",
+                        "Изучить Express.js",
+                        "Создать простое API"
+                    ],
+                    3: [
+                        "Повторить все темы по фронтенду",
+                        "Повторить все темы по бэкенду",
+                        "Изучить Docker",
+                        "Создать fullstack приложение"
+                    ]
+                };
+
+                const selectedMentor = localStorage.getItem('selectedMentor');
+                const tasksList = document.getElementById('tasksList');
+
+                if (!selectedMentor || !mentorsTasks[selectedMentor]) {
+                    tasksList.innerHTML = '<p>Ментор не выбран или не найден</p>';
+                    return;
+                }
+
+                // Получаем сохраненные выполненные задачи
+                const completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
+
+                // Отображаем задачи
+                mentorsTasks[selectedMentor].forEach((task, index) => {
+                    const isCompleted = completedTasks.includes(index);
+
+                    const taskItem = document.createElement('div');
+                    taskItem.className = 'task-item';
+                    taskItem.innerHTML = `
+            <input type="checkbox" id="task-${index}" ${isCompleted ? 'checked' : ''}>
+            <span class="task-text ${isCompleted ? 'completed' : ''}">${task}</span>
+            <button class="delete-btn" data-index="${index}">Удалить</button>
+        `;
+
+                    tasksList.appendChild(taskItem);
+
+                    // Обработка чекбокса
+                    const checkbox = taskItem.querySelector('input');
+                    checkbox.addEventListener('change', function () {
+                        const taskText = taskItem.querySelector('.task-text');
+
+                        if (this.checked) {
+                            taskText.classList.add('completed');
+                            if (!completedTasks.includes(index)) {
+                                completedTasks.push(index);
+                            }
+                        } else {
+                            taskText.classList.remove('completed');
+                            const taskIndex = completedTasks.indexOf(index);
+                            if (taskIndex !== -1) {
+                                completedTasks.splice(taskIndex, 1);
+                            }
+                        }
+
+                        localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+                    });
+
+                    // Обработка кнопки удаления
+                    const deleteBtn = taskItem.querySelector('.delete-btn');
+                    deleteBtn.addEventListener('click', function () {
+                        taskItem.remove();
+
+                        // Удаляем из выполненных, если там был
+                        const taskIndex = completedTasks.indexOf(index);
+                        if (taskIndex !== -1) {
+                            completedTasks.splice(taskIndex, 1);
+                            localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+                        }
+                    });
+                });
+            });
+    </script>
+</body>
+
+</html>
