@@ -4,123 +4,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Mentor - Личные цели</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/MM.svg">
+    <title>My Mentor - Цели</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .goals-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .add-goal {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        #newGoalInput {
+            flex-grow: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+
+        #addGoalBtn {
+            padding: 0.5rem 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .goal-item input[type="checkbox"] {
+            margin-right: 1rem;
+        }
+
+        .goal-text {
+            flex-grow: 1;
+        }
+
+        .completed .goal-text {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>My Mentor</h1>
         <nav>
-            <a href="index.html">Главная</a>
-            <a href="mentor-select.html">Менторы</a>
+            <a href="index.html">Вход</a>
+            <a href="mentor.html">Ментор</a>
             <a href="mentor-tasks.html">Задачи</a>
             <a href="personal-goals.html" class="active">Цели</a>
-            <a href="useful-links.html">Ссылки</a>
+            <a href="resources.html">Ресурсы</a>
         </nav>
     </header>
 
-    <main class="container">
-        <h2>Мои цели</h2>
-
-        <form id="addGoalForm">
-            <input type="text" id="goalInput" placeholder="Новая цель" required>
-            <button type="submit">Добавить</button>
-        </form>
-
-        <div id="goalsList" class="goals-list">
-            <!-- Цели будут добавляться через JS -->
+    <main>
+        <div class="goals-container">
+            <h2>Мои личные цели</h2>
+            <div class="add-goal">
+                <input type="text" id="newGoalInput" placeholder="Добавить новую цель">
+                <button id="addGoalBtn">+</button>
+            </div>
+            <div id="goalsList">
+                <div class="goal-item">
+                    <input type="checkbox" id="goal1">
+                    <span class="goal-text">Закончить проект по веб-разработке</span>
+                    <button class="delete-btn">×</button>
+                </div>
+                <div class="goal-item">
+                    <input type="checkbox" id="goal2">
+                    <span class="goal-text">Изучить новый фреймворк</span>
+                    <button class="delete-btn">×</button>
+                </div>
+            </div>
         </div>
     </main>
 
     <footer>
-        <p>© 2023 My Mentor. Все права защищены.</p>
+        <p>© 2023 My Mentor</p>
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // Добавление новой цели
+        document.getElementById('addGoalBtn').addEventListener('click', function () {
+            const input = document.getElementById('newGoalInput');
+            const goalText = input.value.trim();
+
+            if (goalText) {
                 const goalsList = document.getElementById('goalsList');
-                const addGoalForm = document.getElementById('addGoalForm');
+                const newGoal = document.createElement('div');
+                newGoal.className = 'goal-item';
+                newGoal.innerHTML = `
+                    <input type="checkbox" id="goal${goalsList.children.length + 1}">
+                    <span class="goal-text">${goalText}</span>
+                    <button class="delete-btn">×</button>
+                `;
+                goalsList.appendChild(newGoal);
+                input.value = '';
 
-                // Загружаем цели из localStorage
-                let goals = JSON.parse(localStorage.getItem('goals')) || [];
-                let completedGoals = JSON.parse(localStorage.getItem('completedGoals')) || [];
+                // Добавляем обработчики для новой цели
+                addGoalEventListeners(newGoal);
+            }
+        });
 
-                // Отображаем цели
-                renderGoals();
+        // Обработчики для существующих целей
+        document.querySelectorAll('.goal-item').forEach(addGoalEventListeners);
 
-                // Обработка добавления новой цели
-                addGoalForm.addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const goalInput = document.getElementById('goalInput');
-                    const goalText = goalInput.value.trim();
-
-                    if (goalText) {
-                        goals.push(goalText);
-                        localStorage.setItem('goals', JSON.stringify(goals));
-                        goalInput.value = '';
-                        renderGoals();
-                    }
-                });
-
-                function renderGoals() {
-                    goalsList.innerHTML = '';
-
-                    goals.forEach((goal, index) => {
-                        const isCompleted = completedGoals.includes(index);
-
-                        const goalItem = document.createElement('div');
-                        goalItem.className = 'goal-item';
-                        goalItem.innerHTML = `
-                <input type="checkbox" id="goal-${index}" ${isCompleted ? 'checked' : ''}>
-                <span class="goal-text ${isCompleted ? 'completed' : ''}">${goal}</span>
-                <button class="delete-btn" data-index="${index}">Удалить</button>
-            `;
-
-                        goalsList.appendChild(goalItem);
-
-                        // Обработка чекбокса
-                        const checkbox = goalItem.querySelector('input');
-                        checkbox.addEventListener('change', function () {
-                            const goalText = goalItem.querySelector('.goal-text');
-
-                            if (this.checked) {
-                                goalText.classList.add('completed');
-                                if (!completedGoals.includes(index)) {
-                                    completedGoals.push(index);
-                                }
-                            } else {
-                                goalText.classList.remove('completed');
-                                const goalIndex = completedGoals.indexOf(index);
-                                if (goalIndex !== -1) {
-                                    completedGoals.splice(goalIndex, 1);
-                                }
-                            }
-
-                            localStorage.setItem('completedGoals', JSON.stringify(completedGoals));
-                        });
-
-                        // Обработка кнопки удаления
-                        const deleteBtn = goalItem.querySelector('.delete-btn');
-                        deleteBtn.addEventListener('click', function () {
-                            // Удаляем цель
-                            goals.splice(index, 1);
-                            localStorage.setItem('goals', JSON.stringify(goals));
-
-                            // Обновляем completedGoals
-                            completedGoals = completedGoals
-                                .filter(i => i !== index)
-                                .map(i => i > index ? i - 1 : i);
-                            localStorage.setItem('completedGoals', JSON.stringify(completedGoals));
-
-                            // Перерисовываем список
-                            renderGoals();
-                        });
-                    });
-                }
+        function addGoalEventListeners(goalItem) {
+            // Чекбокс
+            goalItem.querySelector('input[type="checkbox"]').addEventListener('change', function () {
+                this.parentElement.classList.toggle('completed');
             });
+
+            // Кнопка удаления
+            goalItem.querySelector('.delete-btn').addEventListener('click', function () {
+                this.parentElement.remove();
+            });
+        }
     </script>
 </body>
 

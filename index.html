@@ -5,136 +5,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Mentor - Вход</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="images/MM.svg">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-container {
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        #registerBtn {
+            background-color: #2196F3;
+        }
+
+        #authMessage {
+            margin-top: 1rem;
+            text-align: center;
+            color: #f44336;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>My Mentor</h1>
         <nav>
-            <a href="index.html" class="active">Главная</a>
-            <a href="mentor-select.html">Менторы</a>
+            <a href="index.html" class="active">Вход</a>
+            <a href="mentor.html">Ментор</a>
+            <a href="mentor-tasks.html">Задачи</a>
             <a href="personal-goals.html">Цели</a>
-            <a href="useful-links.html">Ссылки</a>
+            <a href="resources.html">Ресурсы</a>
         </nav>
     </header>
 
-    <main class="container">
-        <section class="auth-section">
-            <div class="auth-tabs">
-                <button class="tab-btn active" data-tab="login">Вход</button>
-                <button class="tab-btn" data-tab="register">Регистрация</button>
-            </div>
-
-            <form id="loginForm" class="auth-form active">
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Пароль" required>
-                <button type="submit">Войти</button>
+    <main>
+        <div class="auth-container">
+            <h2>Вход / Регистрация</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="firstName">Имя:</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Фамилия:</label>
+                    <input type="text" id="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Пароль:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" id="loginBtn">Войти</button>
+                <button type="button" id="registerBtn">Зарегистрироваться</button>
+                <p id="authMessage"></p>
             </form>
-
-            <form id="registerForm" class="auth-form">
-                <input type="text" placeholder="Имя" required>
-                <input type="text" placeholder="Фамилия" required>
-                <input type="email" placeholder="Email" required>
-                <input type="password" placeholder="Пароль" required>
-                <button type="submit">Зарегистрироваться</button>
-            </form>
-        </section>
+        </div>
     </main>
 
     <footer>
-        <p>© 2023 My Mentor. Все права защищены.</p>
+        <p>© 2023 My Mentor</p>
     </footer>
 
     <script>
-        // Проверяем авторизацию при загрузке страницы
-            document.addEventListener('DOMContentLoaded', function () {
-                // Переключение между вкладками
-                const tabBtns = document.querySelectorAll('.tab-btn');
-                const authForms = document.querySelectorAll('.auth-form');
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const authMessage = document.getElementById('authMessage');
 
-                tabBtns.forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const tab = this.getAttribute('data-tab');
+            registerBtn.addEventListener('click', function () {
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
 
-                        // Убираем активный класс у всех кнопок и форм
-                        tabBtns.forEach(b => b.classList.remove('active'));
-                        authForms.forEach(form => form.classList.remove('active'));
+                if (!firstName || !lastName || !email || !password) {
+                    authMessage.textContent = 'Заполните все поля';
+                    return;
+                }
 
-                        // Добавляем активный класс текущей кнопке и форме
-                        this.classList.add('active');
-                        document.getElementById(tab + 'Form').classList.add('active');
-                    });
-                });
+                // Сохраняем пользователя
+                const user = { firstName, lastName, email, password };
+                localStorage.setItem('currentUser', JSON.stringify(user));
 
-                // Обработка формы входа
-                document.getElementById('loginForm').addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const email = this.querySelector('input[type="email"]').value;
-                    const password = this.querySelector('input[type="password"]').value;
-
-                    // Получаем пользователей из localStorage
-                    const users = JSON.parse(localStorage.getItem('users')) || [];
-
-                    // Ищем пользователя
-                    const user = users.find(u => u.email === email);
-
-                    if (!user) {
-                        alert('Пользователь не найден');
-                        return;
-                    }
-
-                    if (user.password !== password) {
-                        alert('Неверный пароль');
-                        return;
-                    }
-
-                    // Сохраняем текущего пользователя
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-
-                    // Перенаправляем на страницу выбора ментора
-                    window.location.href = 'mentor-select.html';
-                });
-
-                // Обработка формы регистрации
-                document.getElementById('registerForm').addEventListener('submit', function (e) {
-                    e.preventDefault();
-
-                    const firstName = this.querySelector('input:nth-of-type(1)').value;
-                    const lastName = this.querySelector('input:nth-of-type(2)').value;
-                    const email = this.querySelector('input[type="email"]').value;
-                    const password = this.querySelector('input[type="password"]').value;
-
-                    // Получаем пользователей из localStorage
-                    const users = JSON.parse(localStorage.getItem('users')) || [];
-
-                    // Проверяем, есть ли уже такой email
-                    if (users.some(u => u.email === email)) {
-                        alert('Пользователь с таким email уже зарегистрирован');
-                        return;
-                    }
-
-                    // Создаем нового пользователя
-                    const newUser = {
-                        firstName,
-                        lastName,
-                        email,
-                        password
-                    };
-
-                    // Добавляем в массив пользователей
-                    users.push(newUser);
-
-                    // Сохраняем в localStorage
-                    localStorage.setItem('users', JSON.stringify(users));
-                    localStorage.setItem('currentUser', JSON.stringify(newUser));
-
-                    // Перенаправляем на страницу выбора ментора
-                    window.location.href = 'mentor-select.html';
-                });
+                // Переходим на следующую страницу
+                window.location.href = 'mentor.html';
             });
+
+            loginBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+
+                if (!user || user.email !== email || user.password !== password) {
+                    authMessage.textContent = 'Неверный email или пароль';
+                    return;
+                }
+
+                window.location.href = 'mentor.html';
+            });
+        });
     </script>
 </body>
 
