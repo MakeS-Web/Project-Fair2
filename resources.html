@@ -114,11 +114,6 @@
     </footer>
 
     <script>
-        // Простая проверка URL (начинается с http или https)
-        function isValidUrl(url) {
-            return /^https?:\/\/[\w\-]+(\.[\w\-]+)+[/#?]?.*$/.test(url);
-        }
-
         // Добавление нового ресурса
         document.getElementById('addResourceBtn').addEventListener('click', function () {
             const titleInput = document.getElementById('resourceTitle');
@@ -132,10 +127,7 @@
                 return;
             }
 
-            if (!isValidUrl(url)) {
-                alert('Введите корректный URL (начинающийся с http или https)');
-                return;
-            }
+
 
             const resourcesList = document.getElementById('resourcesList');
             const newResource = document.createElement('div');
