@@ -114,7 +114,6 @@
     </footer>
 
     <script>
-        // Добавление нового ресурса
         document.getElementById('addResourceBtn').addEventListener('click', function () {
             const titleInput = document.getElementById('resourceTitle');
             const urlInput = document.getElementById('resourceUrl');
@@ -143,13 +142,11 @@
             titleInput.value = '';
             urlInput.value = '';
 
-            // Добавляем обработчик удаления
             newResource.querySelector('.delete-resource').addEventListener('click', function () {
                 this.parentElement.remove();
             });
         });
 
-        // Обработчики удаления для существующих ресурсов
         document.querySelectorAll('.delete-resource').forEach(btn => {
             btn.addEventListener('click', function () {
                 this.parentElement.remove();

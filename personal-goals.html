@@ -110,7 +110,6 @@
     </footer>
 
     <script>
-        // Добавление новой цели
         document.getElementById('addGoalBtn').addEventListener('click', function () {
             const input = document.getElementById('newGoalInput');
             const goalText = input.value.trim();
@@ -127,21 +126,16 @@
                 goalsList.appendChild(newGoal);
                 input.value = '';
 
-                // Добавляем обработчики для новой цели
                 addGoalEventListeners(newGoal);
             }
         });
-
-        // Обработчики для существующих целей
         document.querySelectorAll('.goal-item').forEach(addGoalEventListeners);
 
         function addGoalEventListeners(goalItem) {
-            // Чекбокс
             goalItem.querySelector('input[type="checkbox"]').addEventListener('change', function () {
                 this.parentElement.classList.toggle('completed');
             });
 
-            // Кнопка удаления
             goalItem.querySelector('.delete-btn').addEventListener('click', function () {
                 this.parentElement.remove();
             });

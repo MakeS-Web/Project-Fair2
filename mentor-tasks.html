@@ -109,14 +109,12 @@
     </footer>
 
     <script>
-        // Обработка чекбоксов
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
             checkbox.addEventListener('change', function () {
                 this.parentElement.classList.toggle('completed');
             });
         });
 
-        // Получение совета без try/catch и без .then()
         document.getElementById('getAdviceBtn').addEventListener('click', async function () {
             const response = await fetch('https://api.adviceslip.com/advice');
 

@@ -122,11 +122,9 @@
                     return;
                 }
 
-                // Сохраняем пользователя
                 const user = { firstName, lastName, email, password };
                 localStorage.setItem('currentUser', JSON.stringify(user));
 
-                // Переходим на следующую страницу
                 window.location.href = 'mentor.html';
             });
 
